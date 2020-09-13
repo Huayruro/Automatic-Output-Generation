@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 import json
@@ -12,6 +11,8 @@ from email.message import EmailMessage
 import smtplib
 import getpass
 import os.path
+import mimetypes
+from operator import itemgetter
 
 def load_data(filename):
   """Loads the contents of filename as a JSON file."""
@@ -26,7 +27,6 @@ def format_car(car):
       car["car_make"], car["car_model"], car["car_year"])
 def process_data(data):
   """Analyzes the data, looking for maximums.
-
   Returns a list of lines that summarize the information.
   """
   locale.setlocale(locale.LC_ALL, 'en_US.UTF8')
@@ -97,17 +97,19 @@ def main(argv):
   report_summary = Paragraph(summary[0]+"<br/>"+summary[1]+"<br/>"+summary[2]+"<br/> "+"<br/> ")
   #Table
   #Table formatting
-
+  ordered_cars= cars_dict_to_table(data)
+  #1.	Sort the list of cars in the PDF by total sales.
+  ordered_cars[1:]=sorted(ordered_cars[1:],key=itemgetter(3))
   #report_table = Table(data=cars_dict_to_table(data))
   table_style = [('GRID', (0,0), (-1,-1), 1, colors.green)]
-  report_table = Table(data=cars_dict_to_table(data), style=table_style, hAlign="LEFT")
+  report_table = Table(data=ordered_cars, style=table_style, hAlign="LEFT")
   #Build the PDF
   report.build([report_title, report_summary, report_table])
   # TODO: send the PDF report as an email attachment
   #attachment_path = "cars.pdf"
   attachment_path = "/tmp/cars.pdf"
   attachment_filename = os.path.basename(attachment_path)
-  import mimetypes
+
   mime_type, _ = mimetypes.guess_type(attachment_path)
   message = EmailMessage()
 
@@ -118,6 +120,7 @@ def main(argv):
   message['To'] = receiver
 
   message['Subject'] = 'Sales summary for last month'
+
 
   body = summary[0]+"\n"+summary[1]+"\n"+summary[2]+"\n "
   message.set_content(body)
@@ -142,4 +145,3 @@ def main(argv):
 
 if __name__ == "__main__":
   main(sys.argv)
-
