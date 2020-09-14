@@ -103,8 +103,8 @@ def main(argv):
   #print(summary)
   # TODO: turn this into a PDF report
   # Pdf file created
-  report = SimpleDocTemplate("cars.pdf")
-  #report = SimpleDocTemplate("/tmp/cars.pdf")
+  #report = SimpleDocTemplate("cars.pdf")
+  report = SimpleDocTemplate("/tmp/cars.pdf")
   styles = getSampleStyleSheet()
   #Title
   report_title = Paragraph("Sales summary for last month", styles["h1"])
@@ -158,8 +158,8 @@ def main(argv):
   #Build the PDF
   report.build([report_title, report_summary, report_table, report_break, report_pie_title, report_chart, report_bar_title, report_chart1])
   # TODO: send the PDF report as an email attachment
-  attachment_path = "cars.pdf"
-  #attachment_path = "/tmp/cars.pdf"
+  #attachment_path = "cars.pdf"
+  attachment_path = "/tmp/cars.pdf"
   attachment_filename = os.path.basename(attachment_path)
  
   mime_type, _ = mimetypes.guess_type(attachment_path)
@@ -178,7 +178,7 @@ def main(argv):
   message.set_content(body)
 
   # Process the attachment and add it to the email
-  ''' attachment_filename = os.path.basename(attachment_path)
+  attachment_filename = os.path.basename(attachment_path)
   mime_type, _ = mimetypes.guess_type(attachment_path)
   mime_type, mime_subtype = mime_type.split('/', 1)
 
@@ -192,7 +192,7 @@ def main(argv):
   """Sends the message to the configured SMTP server."""
   mail_server = smtplib.SMTP('localhost')
   mail_server.send_message(message)
-  mail_server.quit() '''
+  mail_server.quit()
 
 
 if __name__ == "__main__":
